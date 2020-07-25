@@ -1,0 +1,41 @@
+# Maintainer: Yasuhiro KIMURA <yasu@utahime.org>
+
+pkgname=lv
+pkgver=4.51
+pkgrel=1
+pkgdesc="Powerful Multilingual File Viewer"
+license=('GPL')
+source=(
+  "http://deb.debian.org/debian/pool/main/l/lv/lv_4.51.orig.tar.gz"
+  'patch-src_stream.c::https://github.com/ttdoda/lv/commit/b79149d55b8c51c485a955a2f978f44385c73737.patch'
+  '001-lv-4.51-add-support-of-DESTDIR.patch'
+)
+sha512sums=(
+  '2fd06b94354310177957a23f7d0cab1f74fef8a0251f8cfc160e441b9daee813d2557d6a7ff7380bb6b80b0fd73653072d2eaaaa43a105b4deebedcd1be0c485'
+  '13399a55e6c3187b6b2a20f0b16713c690bd65f682af215ad14b89333ccd3eeec6ae61081bbf12a8835c8bd358daacfaf4c0e260239a2232d0c820de6ac57d09'
+  '33a535f3a787ea863b76d2c7d90154e3978059eaf2546cfee898f948f49824f0b2b206e4845f502e7529eeea40272638bf07b124a08a9893cb410fd5795ad27e'
+)
+arch=('i686' 'x86_64')
+depends=('ncurses')
+makedepends=('gcc' 'ncurses-devel')
+
+prepare() {
+  cd $srcdir/${pkgname}-${pkgver}.orig/src
+  patch -p2 -i ${srcdir}/patch-src_stream.c
+  patch -p0 -i ${srcdir}/001-lv-4.51-add-support-of-DESTDIR.patch
+}
+
+build() {
+  cd $srcdir/${pkgname}-${pkgver}.orig/build
+  ../src/configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --mandir=/usr/share
+  make
+}
+
+package() {
+  cd $srcdir/${pkgname}-${pkgver}.orig/build
+  make DESTDIR="${pkgdir}" install
+}
