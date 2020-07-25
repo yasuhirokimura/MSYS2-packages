@@ -1,0 +1,28 @@
+--- Makefile.in.orig	2020-07-25 13:13:41.923515900 +0900
++++ Makefile.in	2020-07-25 13:29:53.401344900 +0900
+@@ -64,18 +64,13 @@
+ #
+ 
+ install::
+-	$(INSTALL) -s -m 555 lv $(bindir)
+-	if test -f $(bindir)/lgrep; then \
+-		/bin/rm -f $(bindir)/lgrep; \
+-	fi
+-	(cd $(bindir); ln lv lgrep)
+-	if test ! -d $(lvlibdir); then \
+-		mkdir -p $(lvlibdir); \
+-	fi
+-	$(INSTALL) -m 444 $(srcdir)/../lv.hlp $(lvlibdir)
+-	if test -d $(mandir) -a -d $(mandir)/man1; then \
+-		$(INSTALL) -m 444 $(srcdir)/../lv.1 $(mandir)/man1; \
+-	fi
++	mkdir -p $(DESTDIR)$(bindir)
++	$(INSTALL) -s -m 555 lv $(DESTDIR)$(bindir)
++	(cd $(DESTDIR)$(bindir); ln lv lgrep)
++	mkdir -p $(DESTDIR)$(lvlibdir); \
++	$(INSTALL) -m 444 $(srcdir)/../lv.hlp $(DESTDIR)$(lvlibdir)
++	mkdir -p $(DESTDIR)$(mandir)/man1
++	$(INSTALL) -m 444 $(srcdir)/../lv.1 $(DESTDIR)$(mandir)/man1; \
+ 
+ uninstall::
+ 	for i in $(bindir)/lv $(bindir)/lgrep $(lvlibdir)/lv.hlp $(mandir)/man1/lv.1; do \
